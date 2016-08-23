@@ -24,11 +24,17 @@ postTags = (filepath_1280, tags, callback) ->
 	request {method: "POST", uri: endpoint, qs: {filepath_1280: filepath_1280}, body: {tags: tags}, json: true}, (err, res, data) -> callback err, data
 
 findUrls = (context) ->
+	console.log "make request to", endpoint
 	request.get endpoint, {json: true}, (err, res, data) ->
+		console.log "request responsed"
 		if err
 			console.log "ERROR in request"
-			context.done err, data
+			return context.done err, data
+		else
+			console.log "DATA", data
+			console.log "length", data.length
 		if data.length == 0
+			console.log "call context.done"
 			context.done null, 0
 		else
 			console.log "found unttaged photos", data.length
@@ -39,5 +45,5 @@ findUrls = (context) ->
 exports.handler = (event, context) ->
 	console.log "Enpoint: ", endpoint
 	console.log "API Key:", msVision.key
-	findUrls(context)
+	findUrls context
 	
