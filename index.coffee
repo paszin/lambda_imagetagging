@@ -17,20 +17,21 @@ makeRequest = (url, callback) ->
 			console.log "ERROR", err
 		else
 			console.log "request was successful"
+			console.log "data:", data
 			tags.push {name: tag.name, prob: tag.confidence} for tag in data.tags
 			color = {}
-			color.foreground = color.dominantColorForeground
-			color.background = color.dominantColorBackground
-			color.dominants = color.dominantColors
-			color.accent = color.accentColor
-			color.isblackwhite = color.isBWImg
+			color.foreground = data.color.dominantColorForeground
+			color.background = data.color.dominantColorBackground
+			color.dominants = data.color.dominantColors
+			color.accent = data.color.accentColor
+			color.isblackwhite = data.color.isBWImg
 
-			postTags url, tags, color, data.categories, callback
-					
+			postTags url, tags, color, data.categories, data.faces, callback
+
 				
-postTags = (filepath_1280, tags, color, categories, callback) ->
+postTags = (filepath_1280, tags, color, categories, faces, callback) ->
 	console.log "send data back to server"
-	request {method: "POST", uri: endpoint, qs: {filepath_1280: filepath_1280}, body: {tags: tags, color: color, categories: categories}, json: true}, (err, res, data) ->
+	request {method: "POST", uri: endpoint, qs: {filepath_1280: filepath_1280}, body: {tags: tags, color: color, categories: categories, expectedFaces: faces}, json: true}, (err, res, data) ->
 		console.log "call callback"
 		callback err, data
 
